@@ -8,6 +8,40 @@ import Account from './components/Account'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 function App() {
+
+  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState({})
+  const [courses, setCourses] = useState([])
+
+  const fetchUsers = () => {
+      fetch("http://localhost:9292/users")
+          .then(res => res.json())
+          .then(data => {
+            setUsers(data)
+            setLoading(false)  
+          })
+          // .then(data => console.log(data))
+  }
+  
+  const fetchCourses = () => {
+      fetch(`https://localhost:9292/courses`)
+          .then(res => res.json())
+          .then(data => setCourses(data))
+  }
+
+  useEffect(() => {
+      fetchUsers()
+      fetchCourses()
+  }, [])
+
+  if (loading){
+    return (
+      <div>
+        ...Loading
+      </div>
+    )
+  }
+
   return (
     <div className="App">
       <Navbar bg="primary" variant="dark" className = 'navbar'>
@@ -18,13 +52,13 @@ function App() {
       <Router>
           <Switch>
               <Route exact path = "/login">
-                <Login users=""/>
+                <Login users={users}/>
               </Route>
               <Route exact path="/">
                 <Signup />
               </Route>
               <Route exact path='/users/:id'>
-                <Account />
+                <Account users={users}/>
               </Route>
           </Switch>
       </Router>
