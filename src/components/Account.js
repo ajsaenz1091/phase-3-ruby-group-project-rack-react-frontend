@@ -1,21 +1,18 @@
 import React from 'react'
-import { useParams } from "react-router-dom";
 import '../App.css'
-import { Form } from 'react-bootstrap'
+import CourseCard from './CourseCard'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-const Account = ({users}) => {
+const Account = ({userName, courses, updateCourses}) => {
 
-
-    const params = useParams();
-    console.log(users);
-    console.log(params);
-    let currentUser = users.data.find((user) => parseInt(params.id) == user.id)
-
+    // const renderCourses = () => {
+    //     return 
+    // }
     return (
-        <div>
-            <h1>{currentUser.name}</h1>
-            {/* {contacts.map(contact => contact.name)} */}
+        <div className="account-page">
+            <h1>{userName}</h1>
+            {courses.map(course => <CourseCard updateCourses={updateCourses} course ={course} userName = {userName}/>)}
+            
         </div>
     )
 }

@@ -1,40 +1,33 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { useHistory } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
-const Login = ({users}) => {
+const Login = ({setUserName}) => {
 
     const history = useHistory()
 
-    const [form, setForm] = useState({
-        name: ""
-    })
+    const [name, setName] = useState("")
 
-    const compareFetchToForm = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
-        debugger;
-        let user = users.data.find((a) => a.name === form.name)
-            history.push(`/users/${user.id}`)
-        debugger;
+        setUserName(name)
+            history.push(`/users`)
     }
 
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
+        setName(e.target.value)
     };
 
     return (
         <div className = "sign-up-form">
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Username" onChange={ handleChange } name = "name"/>
                 </Form.Group>
-                    <Button variant="primary" type="submit" onClick={compareFetchToForm} >
+                    <Button variant="primary" type="submit" >
                         Login
                     </Button>
             </Form>

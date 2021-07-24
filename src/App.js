@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { Navbar, Nav, Container } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Navbar, Container } from 'react-bootstrap'
 import './App.css';
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -9,42 +8,34 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 function App() {
 
-  const [loading, setLoading] = useState(true)
-  const [users, setUsers] = useState({})
+  // const [loading, setLoading] = useState(false)
+  const [userName, setUserName] = useState("")
+  const [user, setUser] = useState({})
   const [courses, setCourses] = useState([])
 
   const fetchUsers = () => {
-      fetch("http://localhost:9292/users")
+      fetch(`http://localhost:9292/users/search?q=${userName}`)
           .then(res => res.json())
           .then(data => {
-            setUsers(data)
-            setLoading(false)  
+            setUser(data.user)
+            setCourses(data.userCourses)
           })
-          // .then(data => console.log(data))
+          
   }
   
-  const fetchCourses = () => {
-      fetch(`https://localhost:9292/courses`)
-          .then(res => res.json())
-          .then(data => setCourses(data))
+
+  const updateCourses = (id) => {
+    const updatedCourses = courses.filter(course => course.id !== id)
+    setCourses(updatedCourses)
   }
 
   useEffect(() => {
       fetchUsers()
-      fetchCourses()
-  }, [])
-
-  if (loading){
-    return (
-      <div>
-        ...Loading
-      </div>
-    )
-  }
+  }, [userName])
 
   return (
     <div className="App">
-      <Navbar bg="primary" variant="dark" className = 'navbar'>
+      <Navbar bg="primary" variant="dark" className = 'navbar' bg="dark">
         <Container>
           <Navbar.Brand href="/">COURSE-TRACKER</Navbar.Brand>
         </Container>
@@ -52,13 +43,13 @@ function App() {
       <Router>
           <Switch>
               <Route exact path = "/login">
-                <Login users={users}/>
+                <Login setUserName={setUserName} user={user}/>
               </Route>
               <Route exact path="/">
                 <Signup />
               </Route>
-              <Route exact path='/users/:id'>
-                <Account users={users}/>
+              <Route exact path='/users'>
+                <Account updateCourses={updateCourses} courses={courses} userName={userName}/>
               </Route>
           </Switch>
       </Router>
